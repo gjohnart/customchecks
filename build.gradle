@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+}
+
+group 'org.github.gjohn'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly(group: 'com.puppycrawl.tools', name: 'checkstyle', version: '9.3')
+}
