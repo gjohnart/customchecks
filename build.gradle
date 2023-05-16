@@ -12,3 +12,9 @@ repositories {
 dependencies {
     compileOnly(group: 'com.puppycrawl.tools', name: 'checkstyle', version: '9.3')
 }
+
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}

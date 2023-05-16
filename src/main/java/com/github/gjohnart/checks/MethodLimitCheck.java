@@ -1,4 +1,4 @@
-package org.github.gjohn.checks;
+package com.github.gjohnart.checks;
 
 import com.puppycrawl.tools.checkstyle.api.*;
 
