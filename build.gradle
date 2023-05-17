@@ -3,6 +3,11 @@ plugins {
     id 'checkstyle'
 }
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+apply plugin: 'checkstyle'
+
 group 'org.example'
 version '1.0-SNAPSHOT'
 
@@ -11,6 +16,8 @@ repositories {
 }
 
 dependencies {
+    implementation("com.puppycrawl.tools:checkstyle:9.3")
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
@@ -18,28 +25,26 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-
 checkstyle {
     toolVersion "9.3"
-    configFile file("config/checkstyle/checkstyle.xml")
+//    configFile file("config/checkstyle/checkstyle.xml")
 
     showViolations = true
     ignoreFailures = false
 }
-
-checkstyleMain {
-    source ='src/main/java'
-}
-checkstyleTest {
-    source ='src/test/java'
-}
-
-
-tasks.withType(Checkstyle) {
-    reports {
-        xml.required = false
-        html.required = true
-//        html.stylesheet resources.text.fromFile('config/xsl/checkstyle-custom.xsl')
-    }
-}
-
+//
+//checkstyleMain {
+//    source ='src/main/java'
+//}
+//checkstyleTest {
+//    source ='src/test/java'
+//}
+//
+//tasks.withType(Checkstyle) {
+//    reports {
+//        xml.required = false
+//        html.required = true
+////        html.stylesheet resources.text.fromFile('config/xsl/checkstyle-custom.xsl')
+//    }
+//}
+//
