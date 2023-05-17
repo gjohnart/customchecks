@@ -1,109 +1,44 @@
+# variables:
+#   branch_name: $[ coalesce(variables.branch_name_override, '', 'master') ]
+
 trigger: none
 
 pool:
-    vmImage: ubuntu-latest
-
+  vmImage: ubuntu-latest
 
 # resources:
 #   repositories:
 #   - repository: checkstyle
 #     type: git
 #     name: Sandpit-Glen
-#     ref: master
+#     ref: $(branch_name)
 
 jobs:
-- job: RunCheckStyle
-  steps:
-  # - checkout: checkstyle
-  - task: Powershell@2
-    displayName: Running checkstyle on src files
-    inputs:
-      targetType: 'inline'
-      script: gradle clean check
+  - job: RunCheckStyle
+    steps:
+      # - checkout: checkstyle
 
-  - task: PowerShell@2
-    displayName: what's here
-    inputs:
-      targetType: 'inline'
-      script: ls
-    condition: always()
+      - task: Powershell@2
+        displayName: Running checkstyle on src files
+        inputs:
+          targetType: 'inline'
+          script: gradle clean check
 
+      - task: PowerShell@2
+        displayName: 'Creating zip file'
+        inputs:
+          targetType: 'inline'
+          script: |
+            $source = '$(Build.SourcesDirectory)\build\reports\checkstyle\main.html'
+            $dest = '$(Common.TestResultsDirectory)\checkstyle.zip'
+            Compress-Archive -Path $source -DestinationPath $dest
+        continueOnError: true
+        condition: always()
 
-# stages:
-# - stage:
-#   jobs:
-#   - job: LintCode
-#     steps: 
-#     - task: PowerShell@2
-#       displayName: Running checkstyle on src files
-#       inputs:
-#         targetType: 'inline'
-#         script: gradle clean check
-# - stage:
-#   jobs:
-#   - job: Read
-#     steps:
-#     - task: PowerShell@2
-#       displayName: what's here
-#       inputs:
-#         targetType: 'inline'
-#         script: ls
-
-
-# stages:
-# - stage: Lint
-#   jobs: 
-#     - job: Lint
-#       steps:
-#       - script: gradle clean check 
-#       continueOnError: true
-# - stage:
-#   jobs:
-#   - job: Echo
-#     steps:
-#     - script: echo it is done
-#       continueOnError: true
-
-# - stage:
-#   jobs:
-#   - job: List_Contents
-#     steps:
-#     - script: ls
-#       continueOnError: true
-
-# stages:
-# - stage: Build
-#   jobs:
-#   - job: Build
-#     steps:
-#     - script: echo building
-# - stage: Test
-#   jobs:
-#   - job: TestOnWindows
-#     steps:
-#     - script: echo Testing on Windows!
-# - stage: Deploy
-#   jobs:
-#   - job: Deploy
-#     steps:
-#     - script: echo Deploying the code! 
-
-#     - task: PowerShell@2
-#     displayName: 'Creating archiveFile'
-#     inputs:
-#      targetType: 'inline'
-#      script: |
-#        $folder1 = '$(Build.SourcesDirectory)\build\reports\checkstyle\'
-#        $archiveFile= '$(Common.TestResultsDirectory)/checkstyle.zip'
-
-#        echo $folder1
-#        Compress-Archive -Path $folder1, -DestinationPath $archiveFile
-#     continueOnError: true
-
-#   - task: PublishPipelineArtifact@1
-#     displayName: 'Publish artifact'
-#     inputs:
-#       targetPath: '$(Common.TestResultsDirectory)/$(jira_key).zip'
-#       artifact: '$(jira_key).zip'
-#       publishLocation: 'pipeline'
-#     continueOnError: true
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(Common.TestResultsDirectory)'
+          artifact: 'checkstyle.zip'
+          publishLocation: 'pipeline'
+        continueOnError: true
+        condition: always()
