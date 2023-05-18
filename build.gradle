@@ -13,10 +13,13 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     implementation("com.puppycrawl.tools:checkstyle:9.3")
+    checkstyle 'com.github.gljohnart:customchecks:master-SNAPSHOT'
+    checkstyle files('build/libs/custom-checkstyle-rules.jar')
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
@@ -27,12 +30,11 @@ test {
 }
 checkstyle {
     toolVersion "9.3"
-//    configFile file("config/checkstyle/checkstyle.xml")
+    configFile file("config/checkstyle/checkstyle.xml")
 
     showViolations = true
     ignoreFailures = false
 }
-//
 //checkstyleMain {
 //    source ='src/main/java'
 //}
@@ -47,4 +49,4 @@ checkstyle {
 ////        html.stylesheet resources.text.fromFile('config/xsl/checkstyle-custom.xsl')
 //    }
 //}
-//
+
