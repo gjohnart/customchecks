@@ -27,10 +27,25 @@ public class SpaceBetweenCurlysOnClassDef extends CustomCheck {
         }
 
         // No space after last curly
-        DetailAST rightCurly = objBlock.findFirstToken(TokenTypes.RCURLY);
-        if (rightCurly.getLineNo() - rightCurly.getPreviousSibling().getLineNo() > 1) {
+        DetailAST rightCurly = objBlock.getLastChild();
+        System.out.println(rightCurly.getText());
+        System.out.println(rightCurly.getPreviousSibling().getText());
+        System.out.println(findLastRightCurly(rightCurly.getPreviousSibling()).getLineNo());
+        if (rightCurly.getLineNo() - findLastRightCurly(rightCurly.getPreviousSibling()).getLineNo() > 1) {
             String message = "No white space required before final right curly on "+nodeType+".";
             log(firstVariableDeclaration.getLineNo(), message);
         }
+    }
+
+    private DetailAST findLastRightCurly(DetailAST node) {
+        if (node == null) return null;
+        DetailAST lastNode = node.getLastChild();
+        while (lastNode != null ) {
+            if (lastNode.getType() == TokenTypes.RCURLY) {
+                return lastNode;
+            }
+            lastNode = lastNode.getLastChild();
+        }
+        return lastNode;
     }
 }
